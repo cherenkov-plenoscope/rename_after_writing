@@ -5,7 +5,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="network_file_system_sebastian-achim-mueller",
-    version="0.0.1",
+    version="0.0.2",
     description="Safe copy, move, and write on remote drives",
     long_description=long_description,
     long_description_content_type="text/x-rst",
