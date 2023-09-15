@@ -63,43 +63,6 @@ def move(src, dst):
             raise
 
 
-def write(content, path, mode="wt"):
-    """
-    Writes content to `path.tmp` and attempt an atomic move to `path`.
-
-    Parameters
-    ----------
-    content : bytes / str
-        Payload to be written.
-    path : str
-        Path to destination.
-    mode : str (`wt`)
-        Mode of writing.
-    """
-    copy_id = uuid.uuid4().__str__()
-    tmp_path = "{:s}.{:s}.tmp".format(path, copy_id)
-    with open(tmp_path, mode) as f:
-        f.write(content)
-    move(src=tmp_path, dst=path)
-
-
-def read(path, mode="rt"):
-    """
-    I think reading an entire file is rather safe across the nfs.
-    But in case I am wrong, here is the wrapper.
-
-    Parameters
-    ----------
-    path : str
-        Path to source.
-    mode : str (`rt`)
-        Mode of reading.
-    """
-    with open(path, mode) as f:
-        content = f.read()
-    return content
-
-
 def open(file, mode, tmp_dir=None):
     if "r" in str.lower(mode):
         return builtins.open(file=file, mode=mode)

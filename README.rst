@@ -73,20 +73,6 @@ the source-file.
     rnw.move(src="machine/with/src", dst="other/machine/in/network/dst")
 
 
-write
-=====
-
-When ``with open(...`` is too much. Writes to temporary file in targt's
-directory first before moving the temporary file to the target.
-
-.. code-block:: python
-
-    import rename_after_writing as rnw
-
-    rnw.write(content="My text.", path="another/machine/dst.txt", mode="wt")
-
-
-
 .. |BlackStyle| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
