@@ -8,6 +8,7 @@ dies while the file is not complete. To at least spot such incomplete files,
 all writing-operations (write, move, copy, ...) will be followed by an
 atomic move.
 """
+from .version import __version__
 import uuid
 import os
 import shutil
@@ -118,7 +119,7 @@ class NfsFileWriter:
     def __init__(self, file, mode, tmp_dir=None):
         """
         tmp_dir : str (default: None)
-            Path to the emporary-directory where the file is initially written
+            Path to the temporary-directory where the file is initially written
             to. Make sure this is a fast drive.
         """
         self.file = file
