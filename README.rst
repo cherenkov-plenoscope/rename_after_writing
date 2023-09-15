@@ -20,7 +20,7 @@ Install
 
 .. code-block::
 
-    pip install network_file_system
+    pip install rename_after_writing
 
 
 *********
@@ -35,9 +35,9 @@ to a temporary file in the destination's directory before the temporary file is 
 
 .. code-block:: python
 
-    import network_file_system as nfs
+    import rename_after_writing as rnw
 
-    with nfs.open("my_file.txt", "wt") as f:
+    with rnw.open("my_file.txt", "wt") as f:
         for i in range(10):
             f.write(input())
 
@@ -51,9 +51,9 @@ before moving it to its final path.
 
 .. code-block:: python
 
-    import network_file_system as nfs
+    import rename_after_writing as rnw
 
-    nfs.copy(src="machine/with/src", dst="other/machine/in/network/dst")
+    rnw.copy(src="machine/with/src", dst="other/machine/in/network/dst")
 
 
 move
@@ -68,9 +68,9 @@ the source-file.
 
 .. code-block:: python
 
-    import network_file_system as nfs
+    import rename_after_writing as rnw
 
-    nfs.move(src="machine/with/src", dst="other/machine/in/network/dst")
+    rnw.move(src="machine/with/src", dst="other/machine/in/network/dst")
 
 
 write
@@ -81,20 +81,20 @@ directory first before moving the temporary file to the target.
 
 .. code-block:: python
 
-    import network_file_system as nfs
+    import rename_after_writing as rnw
 
-    nfs.write(content="My text.", path="another/machine/dst.txt", mode="wt")
+    rnw.write(content="My text.", path="another/machine/dst.txt", mode="wt")
 
 
 
 .. |BlackStyle| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
-.. |TestStatus| image:: https://github.com/cherenkov-plenoscope/network_file_system/actions/workflows/test.yml/badge.svg?branch=main
-    :target: https://github.com/cherenkov-plenoscope/network_file_system/actions/workflows/test.yml
+.. |TestStatus| image:: https://github.com/cherenkov-plenoscope/rename_after_writing/actions/workflows/test.yml/badge.svg?branch=main
+    :target: https://github.com/cherenkov-plenoscope/rename_after_writing/actions/workflows/test.yml
 
-.. |PyPiStatus| image:: https://img.shields.io/pypi/v/network_file_system
-    :target: https://pypi.org/project/network_file_system
+.. |PyPiStatus| image:: https://img.shields.io/pypi/v/rename_after_writing
+    :target: https://pypi.org/project/rename_after_writing
 
 .. |PackStyleBlack| image:: https://img.shields.io/badge/pack%20style-black-000000.svg
     :target: https://github.com/cherenkov-plenoscope/black_pack
