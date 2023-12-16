@@ -63,39 +63,42 @@ def move(src, dst):
             raise
 
 
-def open(file, mode, tmp_dir=None):
+def open(file, mode):
     if "r" in str.lower(mode):
         return builtins.open(file=file, mode=mode)
     elif "w" in str.lower(mode):
-        return NfsFileWriter(file=file, mode=mode, tmp_dir=tmp_dir)
+        return RnwOpen(file=file, mode=mode)
+    elif "a" in str.lower(mode):
+        return RnwOpen(file=file, mode=mode)
     else:
-        AttributeError("'mode' must either be 'r' or 'w'.")
+        raise AttributeError("'mode' must either be 'r', 'w' or  'a'.")
 
 
-class NfsFileWriter:
+class RnwOpen:
     """
-    Write to tmp-dir first and move to final destination after closeing.
-    This guarantees that when the output 'file' exists, the file is also
-    complete.
+    Write or append to a file.
     """
 
-    def __init__(self, file, mode, tmp_dir=None):
+    def __init__(self, file, mode):
         """
-        tmp_dir : str (default: None)
-            Path to the temporary-directory where the file is initially written
-            to. Make sure this is a fast drive.
+        Parameters
+        ----------
+        file : str
+            Path to file.
+        mode : str
+            Must be either wtite 'w' or append 'a' mode.
         """
         self.file = file
+        self.tmp_file = file + "." + uuid.uuid4().__str__()
         self.mode = mode
-        self.tmp_dir = tmp_dir
         self.ready = False
         self.closed = False
 
     def close(self):
         self.rc = self.f.close()
         move(src=self.tmp_file, dst=self.file)
-        self.tmp.cleanup()
         self.closed = True
+        self.ready = False
         return self.rc
 
     def write(self, payload):
@@ -104,10 +107,9 @@ class NfsFileWriter:
         return self.f.write(payload)
 
     def __enter__(self):
-        self.tmp = tempfile.TemporaryDirectory(dir=self.tmp_dir)
-        self.tmp_file = os.path.join(
-            self.tmp.name, os.path.basename(self.file)
-        )
+        if "a" in str.lower(self.mode):
+            if os.path.exists(self.file):
+                move(src=self.file, dst=self.tmp_file)
         self.f = builtins.open(file=self.tmp_file, mode=self.mode)
         self.ready = True
         return self.f

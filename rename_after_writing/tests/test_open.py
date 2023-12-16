@@ -24,3 +24,28 @@ def test_open_context():
 
         with rnw.open(file, "rt") as f:
             assert f.read() == "ralerale"
+
+
+def test_open_context_append():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "123.txt")
+
+        with rnw.open(path, "wt") as f:
+            f.write("123")
+
+        with rnw.open(path, "at") as f:
+            f.write("456")
+
+        with rnw.open(path, "rt") as f:
+            assert f.read() == "123456"
+
+
+def test_open_context_append_file_does_not_exist_yet():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "123.txt")
+
+        with rnw.open(path, "at") as f:
+            f.write("456")
+
+        with rnw.open(path, "rt") as f:
+            assert f.read() == "456"
