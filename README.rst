@@ -1,7 +1,7 @@
 ####################
 rename_after_writing
 ####################
-|TestStatus| |PyPiStatus| |BlackStyle| |PackStyleBlack|
+|TestStatus| |PyPiStatus| |BlackStyle| |BlackPackStyle| |MITLicenseBadge|
 
 A python-library to help with the completeness of files when moving, copying and writing.
 Writing a file is not atomic. In the worst case the process writing the file
@@ -82,5 +82,8 @@ the source-file.
 .. |PyPiStatus| image:: https://img.shields.io/pypi/v/rename_after_writing
     :target: https://pypi.org/project/rename_after_writing
 
-.. |PackStyleBlack| image:: https://img.shields.io/badge/pack%20style-black-000000.svg
+.. |BlackPackStyle| image:: https://img.shields.io/badge/pack%20style-black-000000.svg
     :target: https://github.com/cherenkov-plenoscope/black_pack
+
+.. |MITLicenseBadge| image:: https://img.shields.io/badge/License-MIT-yellow.svg
+    :target: https://opensource.org/licenses/MIT

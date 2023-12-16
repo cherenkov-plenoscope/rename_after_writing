@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/network_file_system
+      url: https://pypi.org/project/rename_after_writing
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
