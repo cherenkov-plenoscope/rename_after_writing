@@ -27,6 +27,26 @@ Install
 Functions
 *********
 
+
+Path
+====
+
+Writes to a temporary path and move it to your desired ``path`` on exit.
+
+.. code-block:: python
+
+    import rename_after_writing as rnw
+
+    with rnw.Path(path="my_file.txt") as tmp_path:
+        with open(tmp_path, "wt") as f:
+            for i in range(10):
+                f.write(input())
+
+Note, that while you write to the file (while you provide ``input()``) the
+file is written into a temporary file named ``path`` + ``.`` + ``uuid()``.
+After writing, on exit of the contextmanager, the temporary file is moved to
+``path``.
+
 open
 ====
 

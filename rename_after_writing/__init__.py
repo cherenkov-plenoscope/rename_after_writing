@@ -116,3 +116,29 @@ class RnwOpen:
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         return self.close()
+
+
+class Path:
+    """
+    Adds a uuid to your path and moves 'path.uuid' back to 'path' on exit.
+    """
+
+    def __init__(self, path):
+        """
+        Parameters
+        ----------
+        path : str
+            The path to which the temporary path is renamed to after exit.
+        """
+        self.path = path
+        self.tmp_path = path + "." + uuid.uuid4().__str__()
+
+    def __enter__(self):
+        return self.tmp_path
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        move(src=self.tmp_path, dst=self.path)
+        return
+
+    def __repr__(self):
+        return f"{self.__class__.__name__:s}()"
