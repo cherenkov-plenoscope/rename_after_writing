@@ -8,6 +8,7 @@ dies while the file is not complete. To at least spot such incomplete files,
 all writing-operations (write, move, copy, ...) will be followed by an
 atomic move.
 """
+
 from .version import __version__
 import uuid
 import os
@@ -96,7 +97,9 @@ class RnwOpen:
         self.file = file
         if use_tmp_dir:
             self.tmp_handle = tempfile.TemporaryDirectory(prefix="rnw_")
-            self.tmp_file = os.path.join(self.tmp_handle.name, uuid.uuid4().__str__())
+            self.tmp_file = os.path.join(
+                self.tmp_handle.name, uuid.uuid4().__str__()
+            )
         else:
             self.tmp_handle = None
             self.tmp_file = file + "." + uuid.uuid4().__str__()
@@ -152,7 +155,9 @@ class Path:
         self.path = path
         if use_tmp_dir:
             self.tmp_handle = tempfile.TemporaryDirectory(prefix="rnw_")
-            self.tmp_path = os.path.join(self.tmp_handle.name, uuid.uuid4().__str__())
+            self.tmp_path = os.path.join(
+                self.tmp_handle.name, uuid.uuid4().__str__()
+            )
         else:
             self.tmp_handle = None
             self.tmp_path = path + "." + uuid.uuid4().__str__()
