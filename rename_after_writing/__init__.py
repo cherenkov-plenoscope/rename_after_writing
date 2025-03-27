@@ -1,12 +1,16 @@
 """
-Network-File-System
-===================
+Rename after writing
+====================
 
-A python-library to make moves, copys and writes safer on remote drives.
-Writing a file is not atomic. In the worst case the process writing your file
-dies while the file is not complete. To at least spot such incomplete files,
-all writing-operations (write, move, copy, ...) will be followed by an
-atomic move.
+A library to make moves, copys and writes safer on remote drives. Writing a file
+is not atomic. In the worst case the process writing your file dies while the
+file is not complete. To at least spot such incomplete files, all
+writing operations (write, move, copy, ...) will be followed by an atomic move
+which gives the written file its final filename. Further, the option
+'use_tmp_dir=True' allows to write to the local /tmp drive what often performs
+much better when dealing with many small write operations than a remote network
+drive. After the writing, the file is moved to its final destination in a
+consecutive write.
 """
 
 from .version import __version__
@@ -78,6 +82,8 @@ def open(file, mode, use_tmp_dir=False):
 class RnwOpen:
     """
     Write or append to a file.
+    After first writing to a temporary file, the temporary file is moved to the
+    final filename.
     """
 
     def __init__(self, file, mode, use_tmp_dir=False):
@@ -90,7 +96,7 @@ class RnwOpen:
             Must be either wtite 'w' or append 'a' mode.
         use_tmp_dir : bool, default: False
             Whether to use the '/tmp' directory or not. If False, the temporary
-            file is written in the directory where the 'path' is going to be.
+            file is written in the directory where 'path' is going to be.
             Using '/tmp' can be advantagous when many small write operations
             are expensive in 'path' but efficient in '/tmp'.
         """
@@ -130,7 +136,8 @@ class RnwOpen:
 
 class Path:
     """
-    Adds a uuid to your path and moves 'path.uuid' back to 'path' on exit.
+    Makes a temporary filename which will be moved to its final destination
+    'path' on exit.
     """
 
     def __init__(self, path, use_tmp_dir=False):
@@ -141,7 +148,7 @@ class Path:
             The path to which the temporary path is renamed to after exit.
         use_tmp_dir : bool, default: False
             Whether to use the '/tmp' directory or not. If False, the temporary
-            file is written in the directory where the 'path' is going to be.
+            file is written in the directory where 'path' is going to be.
             Using '/tmp' can be advantagous when many small write operations
             are expensive in 'path' but efficient in '/tmp'.
         """
