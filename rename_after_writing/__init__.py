@@ -94,28 +94,21 @@ class RnwOpen:
             Using '/tmp' can be advantagous when many small write operations
             are expensive in 'path' but efficient in '/tmp'.
         """
-        self.file = file
-        if use_tmp_dir:
-            self.tmp_handle = tempfile.TemporaryDirectory(prefix="rnw_")
-            self.tmp_file = os.path.join(
-                self.tmp_handle.name, uuid.uuid4().__str__()
-            )
-        else:
-            self.tmp_handle = None
-            self.tmp_file = file + "." + uuid.uuid4().__str__()
+        self._path = Path(path=file, use_tmp_dir=use_tmp_dir)
+
         self.mode = mode
         self.ready = False
         self.closed = False
 
+    @property
+    def file(self):
+        return self._path.path
+
     def close(self):
         self.rc = self.f.close()
-        move(src=self.tmp_file, dst=self.file)
+        move(src=self._path.tmp_path, dst=self._path.path)
         self.closed = True
         self.ready = False
-
-        if self.tmp_handle is not None:
-            self.tmp_handle.cleanup()
-
         return self.rc
 
     def write(self, payload):
@@ -125,9 +118,9 @@ class RnwOpen:
 
     def __enter__(self):
         if "a" in str.lower(self.mode):
-            if os.path.exists(self.file):
-                move(src=self.file, dst=self.tmp_file)
-        self.f = builtins.open(file=self.tmp_file, mode=self.mode)
+            if os.path.exists(self._path.path):
+                move(src=self._path.path, dst=self._path.tmp_path)
+        self.f = builtins.open(file=self._path.tmp_path, mode=self.mode)
         self.ready = True
         return self.f
 
