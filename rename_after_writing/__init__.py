@@ -63,13 +63,13 @@ def move(src, dst):
             raise
 
 
-def open(file, mode):
+def open(file, mode, use_tmp_dir=False):
     if "r" in str.lower(mode):
         return builtins.open(file=file, mode=mode)
     elif "w" in str.lower(mode):
-        return RnwOpen(file=file, mode=mode)
+        return RnwOpen(file=file, mode=mode, use_tmp_dir=use_tmp_dir)
     elif "a" in str.lower(mode):
-        return RnwOpen(file=file, mode=mode)
+        return RnwOpen(file=file, mode=mode, use_tmp_dir=use_tmp_dir)
     else:
         raise AttributeError("'mode' must either be 'r', 'w' or  'a'.")
 
@@ -79,7 +79,7 @@ class RnwOpen:
     Write or append to a file.
     """
 
-    def __init__(self, file, mode):
+    def __init__(self, file, mode, use_tmp_dir=False):
         """
         Parameters
         ----------
@@ -87,9 +87,19 @@ class RnwOpen:
             Path to file.
         mode : str
             Must be either wtite 'w' or append 'a' mode.
+        use_tmp_dir : bool, default: False
+            Whether to use the '/tmp' directory or not. If False, the temporary
+            file is written in the directory where the 'path' is going to be.
+            Using '/tmp' can be advantagous when many small write operations
+            are expensive in 'path' but efficient in '/tmp'.
         """
         self.file = file
-        self.tmp_file = file + "." + uuid.uuid4().__str__()
+        if use_tmp_dir:
+            self.tmp_handle = tempfile.TemporaryDirectory(prefix="rnw_")
+            self.tmp_file = os.path.join(self.tmp_handle.name, uuid.uuid4().__str__())
+        else:
+            self.tmp_handle = None
+            self.tmp_file = file + "." + uuid.uuid4().__str__()
         self.mode = mode
         self.ready = False
         self.closed = False
@@ -99,6 +109,10 @@ class RnwOpen:
         move(src=self.tmp_file, dst=self.file)
         self.closed = True
         self.ready = False
+
+        if self.tmp_handle is not None:
+            self.tmp_handle.cleanup()
+
         return self.rc
 
     def write(self, payload):
@@ -123,21 +137,34 @@ class Path:
     Adds a uuid to your path and moves 'path.uuid' back to 'path' on exit.
     """
 
-    def __init__(self, path):
+    def __init__(self, path, use_tmp_dir=False):
         """
         Parameters
         ----------
         path : str
             The path to which the temporary path is renamed to after exit.
+        use_tmp_dir : bool, default: False
+            Whether to use the '/tmp' directory or not. If False, the temporary
+            file is written in the directory where the 'path' is going to be.
+            Using '/tmp' can be advantagous when many small write operations
+            are expensive in 'path' but efficient in '/tmp'.
         """
         self.path = path
-        self.tmp_path = path + "." + uuid.uuid4().__str__()
+        if use_tmp_dir:
+            self.tmp_handle = tempfile.TemporaryDirectory(prefix="rnw_")
+            self.tmp_path = os.path.join(self.tmp_handle.name, uuid.uuid4().__str__())
+        else:
+            self.tmp_handle = None
+            self.tmp_path = path + "." + uuid.uuid4().__str__()
 
     def __enter__(self):
         return self.tmp_path
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         move(src=self.tmp_path, dst=self.path)
+
+        if self.tmp_handle is not None:
+            self.tmp_handle.cleanup()
         return
 
     def __repr__(self):
