@@ -174,3 +174,46 @@ class Path:
 
     def __repr__(self):
         return f"{self.__class__.__name__:s}()"
+
+
+class Directory:
+    """
+    Makes a temporary directory which will be moved to its final destination
+    'path' on exit.
+    """
+
+    def __init__(self, path, use_tmp_dir=False):
+        """
+        Parameters
+        ----------
+        path : str
+            The path to which the temporary directory is renamed to after exit.
+        use_tmp_dir : bool, default: False
+            Whether to use the '/tmp' directory or not. If False, the temporary
+            directory is written in the directory where 'path' is going to be.
+            Using '/tmp' can be advantagous when many small write operations
+            are expensive in 'path' but efficient in '/tmp'.
+        """
+        self.path = path
+        if use_tmp_dir:
+            self.tmp_dir_handle = tempfile.TemporaryDirectory(prefix="rnw_")
+            self.tmp_dir_path = os.path.join(
+                self.tmp_dir_handle.name, uuid.uuid4().__str__()
+            )
+        else:
+            self.tmp_dir_handle = None
+            self.tmp_dir_path = path + "." + uuid.uuid4().__str__()
+        os.makedirs(self.tmp_dir_path)
+
+    def __enter__(self):
+        return self.tmp_dir_path
+
+    def __exit__(self, exc_type, exc_value, exc_tb):
+        move(src=self.tmp_dir_path, dst=self.path)
+
+        if self.tmp_dir_handle is not None:
+            self.tmp_dir_handle.cleanup()
+        return
+
+    def __repr__(self):
+        return f"{self.__class__.__name__:s}()"
