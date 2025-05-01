@@ -165,7 +165,10 @@ class Path:
     def __enter__(self):
         return self.tmp_path
 
-    def __exit__(self, exc_type, exc_value, exc_tb):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if exc_type is not None or exc_value is not None:
+            return False
+
         move(src=self.tmp_path, dst=self.path)
 
         if self.tmp_handle is not None:
@@ -208,7 +211,10 @@ class Directory:
     def __enter__(self):
         return self.tmp_dir_path
 
-    def __exit__(self, exc_type, exc_value, exc_tb):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        if exc_type is not None or exc_value is not None:
+            return False
+
         move(src=self.tmp_dir_path, dst=self.path)
 
         if self.tmp_dir_handle is not None:
