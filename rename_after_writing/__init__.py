@@ -131,7 +131,7 @@ class RnwOpen:
         return self.f
 
     def __exit__(self, exc_type, exc_value, exc_tb):
-        return self.close()
+        self.close()
 
 
 class Path:
@@ -173,7 +173,6 @@ class Path:
 
         if self.tmp_handle is not None:
             self.tmp_handle.cleanup()
-        return
 
     def __repr__(self):
         return f"{self.__class__.__name__:s}()"
@@ -219,7 +218,6 @@ class Directory:
 
         if self.tmp_dir_handle is not None:
             self.tmp_dir_handle.cleanup()
-        return
 
     def __repr__(self):
         return f"{self.__class__.__name__:s}()"
